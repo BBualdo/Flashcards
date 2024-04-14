@@ -1,14 +1,16 @@
 ﻿using Microsoft.Data.SqlClient;
 using Spectre.Console;
+using System.Configuration;
 
 namespace DatabaseLibrary;
 
 public class DbContext
 {
-  public string ConnectionString { get; set; } = "Data Source=(localdb)\\C#AcademyProjects;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=false";
+  private string _connectionString { get; set; }
 
   public DbContext()
   {
+    _connectionString = ConfigurationManager.AppSettings.Get("MasterConnectionString")!;
     AnsiConsole.Markup("[blue]Loading...[/]");
     CreateDatabase();
     CreateTables();
@@ -16,19 +18,19 @@ public class DbContext
 
   private void CreateDatabase()
   {
-    using SqlConnection connection = new(ConnectionString);
+    using SqlConnection connection = new(_connectionString);
     connection.Open();
 
     string sql = "IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'flashcards') CREATE DATABASE flashcards";
     using SqlCommand command = new(sql, connection);
     command.ExecuteNonQuery();
 
-    ConnectionString = "Data Source=(localdb)\\C#AcademyProjects;Initial Catalog=flashcards;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=false";
+    _connectionString = ConfigurationManager.AppSettings.Get("ConnectionString")!;
   }
 
   private void CreateTables()
   {
-    using SqlConnection connection = new(ConnectionString);
+    using SqlConnection connection = new(_connectionString);
     connection.Open();
 
     string sql = @"IF NOT EXISTS(SELECT * FROM sys.tables WHERE schema_id=SCHEMA_ID('dbo') AND name='stacks') CREATE TABLE stacks(
