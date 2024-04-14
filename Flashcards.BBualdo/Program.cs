@@ -1,5 +1,8 @@
-﻿using DatabaseLibrary;
+﻿using Flashcards.BBualdo;
 
+AppEngine app = new();
 
-DbContext db = new();
-
+while (app.IsRunning)
+{
+  app.MainMenu();
+}
