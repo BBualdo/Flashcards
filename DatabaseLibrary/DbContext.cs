@@ -7,13 +7,17 @@ namespace DatabaseLibrary;
 public class DbContext
 {
   private string _connectionString { get; set; }
+  public StacksDataAccess StacksAccess { get; set; }
 
   public DbContext()
   {
     _connectionString = ConfigurationManager.AppSettings.Get("MasterConnectionString")!;
     AnsiConsole.Markup("[blue]Loading...[/]");
+
     CreateDatabase();
     CreateTables();
+
+    StacksAccess = new(_connectionString);
   }
 
   private void CreateDatabase()

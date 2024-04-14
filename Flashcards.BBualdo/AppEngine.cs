@@ -1,5 +1,4 @@
 ﻿using DatabaseLibrary;
-using DatabaseLibrary.ConsoleEngine;
 using Spectre.Console;
 
 namespace Flashcards.BBualdo;
@@ -99,11 +98,15 @@ internal class AppEngine
         FlashcardsMenu();
         break;
       case "Show Stacks":
-        // GetAllStacks();
+        DbContext.StacksAccess.GetAllStacks();
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
       case "Create Stack":
-        // UserInput.GetStackName();
-        // InsertStack();
+        string stackName = UserInput.GetStackName();
+        DbContext.StacksAccess.InsertStack(stackName);
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
       case "Update Stack":
         // GetAllStacks();

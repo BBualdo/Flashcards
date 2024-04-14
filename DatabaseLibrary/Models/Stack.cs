@@ -1,13 +1,21 @@
-﻿namespace DatabaseLibrary.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DatabaseLibrary.Models;
 
 public class Stack
 {
-  public int Id { get; set; }
+  [Required]
+  [Key]
+  public int Stack_Id { get; set; }
+  [Required]
+  [StringLength(40)]
   public string Name { get; set; }
+
+  public Stack() { }
 
   public Stack(int id, string name)
   {
-    Id = id;
+    Stack_Id = id;
     Name = name;
   }
 }

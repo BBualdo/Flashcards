@@ -1,6 +1,7 @@
-﻿using Spectre.Console;
+﻿using DatabaseLibrary.Models;
+using Spectre.Console;
 
-namespace DatabaseLibrary.ConsoleEngine;
+namespace DatabaseLibrary;
 
 public class ConsoleEngine
 {
@@ -27,5 +28,19 @@ public class ConsoleEngine
     Rule rule = new Rule("FLASHCARDS").NoBorder();
     rule.Style = new Style(Color.Blue);
     AnsiConsole.Write(rule);
+  }
+
+  public static void ShowStacksTable(List<Stack> stacks)
+  {
+    Table table = new Table();
+    table.AddColumn(new TableColumn("ID"));
+    table.AddColumn(new TableColumn("Name"));
+
+    foreach (Stack stack in stacks)
+    {
+      table.AddRow(stack.Stack_Id.ToString(), stack.Name);
+    }
+
+    AnsiConsole.Write(table);
   }
 }
