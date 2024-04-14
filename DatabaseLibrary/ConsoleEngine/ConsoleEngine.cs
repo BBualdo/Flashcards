@@ -14,4 +14,18 @@ public class ConsoleEngine
 
     return choice;
   }
+
+  public static void ShowMenuTitle(string title)
+  {
+    Rule rule = new Rule(title).DoubleBorder().LeftJustified();
+    rule.Style = new Style(Color.Blue);
+    AnsiConsole.Write(rule);
+  }
+
+  public static void ShowAppTitle()
+  {
+    Rule rule = new Rule("FLASHCARDS").NoBorder();
+    rule.Style = new Style(Color.Blue);
+    AnsiConsole.Write(rule);
+  }
 }
