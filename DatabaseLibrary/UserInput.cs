@@ -20,9 +20,37 @@ public class UserInput
     return stackName;
   }
 
-  public static int? GetStackID(List<Stack> stacks)
+  public static int? GetStackId(List<Stack> stacks)
   {
-    int stackId = AnsiConsole.Ask<int>("[yellow]Enter ID of stack you want to update[/] [blue]or type 0 to return to Stacks Menu: [/]");
+    int stackId = AnsiConsole.Ask<int>("[yellow]Enter ID of stack you want to interact with[/] [blue]or type 0 to return to Stacks Menu: [/]");
+
+    if (stackId == 0) return null;
+
+    while (!StackIDValidator.IsValid(stacks, stackId))
+    {
+      stackId = AnsiConsole.Ask<int>("[yellow]Try again: [/]");
+    }
+
+    return stackId;
+  }
+
+  public static int? GetFlashcardId(List<FlashcardDTO> flashcards)
+  {
+    int flashcardId = AnsiConsole.Ask<int>("[yellow]Enter ID of flashcard you want to interact with[/] [blue]or type 0 to return to Stacks Menu: [/]");
+
+    if (flashcardId == 0) return null;
+
+    while (!FlashcardIDValidator.IsValid(flashcards, flashcardId))
+    {
+      flashcardId = AnsiConsole.Ask<int>("[yellow]Try again: [/]");
+    }
+
+    return flashcardId;
+  }
+
+  public static int? GetNewStackIdForFlashcard(List<Stack> stacks)
+  {
+    int stackId = AnsiConsole.Ask<int>("[yellow]Enter ID of stack where flashcard should be stored.[/] [blue]or type 0 to return to Stacks Menu: [/]");
 
     if (stackId == 0) return null;
 
