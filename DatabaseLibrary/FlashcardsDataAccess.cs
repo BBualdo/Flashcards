@@ -14,16 +14,16 @@ public class FlashcardsDataAccess
     _connectionString = connectionString;
   }
 
-  public List<FlashcardDTO> GetFlashcardsList(int? id)
+  public List<FlashcardDTO> GetFlashcardsList(int? stackId)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $@"SELECT f.flashcard_id, f.question, f.answer, s.name AS stack_name 
+    string sql = @"SELECT f.display_id, f.question, f.answer, s.name AS stack_name 
                     FROM flashcards f
                     JOIN stacks s ON f.stack_id=s.stack_id
-                    WHERE f.stack_id=@Id";
+                    WHERE f.stack_id=@StackId";
 
-    List<FlashcardDTO> flashcards = connection.Query<FlashcardDTO>(sql, new { Id = id }).ToList();
+    List<FlashcardDTO> flashcards = connection.Query<FlashcardDTO>(sql, new { StackId = stackId }).ToList();
 
     return flashcards;
   }
@@ -36,7 +36,7 @@ public class FlashcardsDataAccess
       return false;
     }
 
-    flashcards = flashcards.OrderBy(flashcard => flashcard.Flashcard_Id).ToList();
+    flashcards = flashcards.OrderBy(flashcard => flashcard.Display_Id).ToList();
 
     ConsoleEngine.ShowFlashcardsTable(flashcards);
     return true;
@@ -46,9 +46,11 @@ public class FlashcardsDataAccess
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"INSERT INTO flashcards(question, answer, stack_id) VALUES(@Question, @Answer, @StackId)";
+    int nextDisplayId = GetNextDisplayId(stackId);
 
-    int rowsAffected = connection.Execute(sql, new { Question = question, Answer = answer, StackId = stackId });
+    string sql = "INSERT INTO flashcards(question, answer, stack_id, display_id) VALUES(@Question, @Answer, @StackId, @DisplayId)";
+
+    int rowsAffected = connection.Execute(sql, new { Question = question, Answer = answer, StackId = stackId, DisplayId = nextDisplayId });
 
     if (rowsAffected == 0)
     {
@@ -56,17 +58,17 @@ public class FlashcardsDataAccess
       return false;
     }
 
-    AnsiConsole.Markup($"[green]Flashcard created successfully![/]");
+    AnsiConsole.Markup("[green]Flashcard created successfully![/]");
     return true;
   }
 
-  public bool UpdateFlashcard(int? flashcardId, int? newStackId, string? question, string? answer)
+  public bool UpdateFlashcard(int? stackId, int? displayId, int? newStackId, string? question, string? answer)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"UPDATE flashcards SET question=@Question, answer=@Answer, stack_id=@NewStackId WHERE flashcard_id=@FlashcardId";
+    string sql = "UPDATE flashcards SET question=@Question, answer=@Answer, stack_id=@NewStackId WHERE display_id=@DisplayId AND stack_id=@StackId";
 
-    int affectedRows = connection.Execute(sql, new { Question = question, Answer = answer, NewStackId = newStackId, FlashcardId = flashcardId });
+    int affectedRows = connection.Execute(sql, new { Question = question, Answer = answer, NewStackId = newStackId, DisplayId = displayId, StackId = stackId });
 
     if (affectedRows == 0)
     {
@@ -78,13 +80,30 @@ public class FlashcardsDataAccess
     return true;
   }
 
-  public bool DeleteFlashcard(int? flashcardId)
+  public bool UpdateFlashcardId(int? stackId, int? displayId, int? newDisplayId)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"DELETE FROM flashcards WHERE flashcard_id=@FlashcardId";
+    string sql = "UPDATE flashcards SET display_id=@NewDisplayId WHERE display_id=@DisplayId AND stack_id=@StackId";
 
-    int rowsAffected = connection.Execute(sql, new { FlashcardId = flashcardId });
+    int affectedRows = connection.Execute(sql, new { NewDisplayId = newDisplayId, DisplayId = displayId, StackId = stackId });
+
+    if (affectedRows == 0)
+    {
+      AnsiConsole.Markup("[red]Updating Failed![/]");
+      return false;
+    }
+
+    return true;
+  }
+
+  public bool DeleteFlashcard(int? displayId)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    string sql = "DELETE FROM flashcards WHERE display_id=@DisplayId";
+
+    int rowsAffected = connection.Execute(sql, new { DisplayId = displayId });
 
     if (rowsAffected == 0)
     {
@@ -94,5 +113,17 @@ public class FlashcardsDataAccess
 
     AnsiConsole.Markup("[green]Flashcard deleted successfully![/]");
     return true;
+  }
+
+
+  private int GetNextDisplayId(int? stackId)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    string sql = "SELECT ISNULL(MAX(display_id), 0) + 1 FROM flashcards WHERE stack_id=@StackId";
+
+    int nextDisplayId = connection.ExecuteScalar<int>(sql, new { StackId = stackId });
+
+    return nextDisplayId;
   }
 }

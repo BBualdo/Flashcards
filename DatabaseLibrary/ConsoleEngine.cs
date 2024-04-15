@@ -54,7 +54,7 @@ public class ConsoleEngine
 
     foreach (FlashcardDTO flashcard in flashcards)
     {
-      table.AddRow(flashcard.Flashcard_Id.ToString(), flashcard.Stack_Name, flashcard.Question, flashcard.Answer);
+      table.AddRow(flashcard.Display_Id.ToString(), flashcard.Stack_Name, flashcard.Question, flashcard.Answer);
     }
 
     AnsiConsole.Write(table);

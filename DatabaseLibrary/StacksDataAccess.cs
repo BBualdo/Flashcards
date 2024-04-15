@@ -38,7 +38,7 @@ public class StacksDataAccess(string connectionString)
   {
     using SqlConnection connection = new(_connectionString);
 
-    string sql = $"INSERT INTO stacks(name) VALUES(@StackName)";
+    string sql = "INSERT INTO stacks(name) VALUES(@StackName)";
 
     int rowsAffected = connection.Execute(sql, new { StackName = stackName });
 
@@ -56,7 +56,7 @@ public class StacksDataAccess(string connectionString)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"UPDATE stacks SET name=@Name WHERE stack_id=@Id";
+    string sql = "UPDATE stacks SET name=@Name WHERE stack_id=@Id";
 
     int affectedRows = connection.Execute(sql, new { Name = updatedName, Id = id });
 
@@ -74,7 +74,7 @@ public class StacksDataAccess(string connectionString)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"DELETE FROM stacks WHERE stack_id=@Id";
+    string sql = "DELETE FROM stacks WHERE stack_id=@Id";
 
     int affectedRows = connection.Execute(sql, new { Id = id });
 
