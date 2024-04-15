@@ -105,7 +105,13 @@ internal class AppEngine
         Console.ReadKey();
         break;
       case "Create Stack":
-        string stackNameToAdd = UserInput.GetStackName();
+        string? stackNameToAdd = UserInput.GetStackName();
+        if (stackNameToAdd == null)
+        {
+          StacksMenu();
+          break;
+        }
+
         DbContext.StacksAccess.InsertStack(stackNameToAdd);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
         Console.ReadKey();
@@ -113,16 +119,37 @@ internal class AppEngine
       case "Update Stack":
         List<Stack> stacksToUpdate = DbContext.StacksAccess.GetStacksList();
         DbContext.StacksAccess.GetAllStacks(stacksToUpdate);
-        int stackIdToUpdate = UserInput.GetStackID(stacksToUpdate);
-        string updatedName = UserInput.GetStackName();
+        int? stackIdToUpdate = UserInput.GetStackID(stacksToUpdate);
+        if (stackIdToUpdate == null)
+        {
+          StacksMenu();
+          break;
+        }
+
+        string? updatedName = UserInput.GetStackName();
+        if (updatedName == null)
+        {
+          StacksMenu();
+          break;
+        }
+
         DbContext.StacksAccess.UpdateStack(stackIdToUpdate, updatedName);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
         Console.ReadKey();
         break;
       case "Delete Stack":
-        // GetAllStacks();
-        // UserInput.GetStackID();
-        // DeleteStack();
+        List<Stack> stacksToDelete = DbContext.StacksAccess.GetStacksList();
+        DbContext.StacksAccess.GetAllStacks(stacksToDelete);
+        int? stackIdToDelete = UserInput.GetStackID(stacksToDelete);
+        if (stackIdToDelete == null)
+        {
+          StacksMenu();
+          break;
+        }
+
+        DbContext.StacksAccess.DeleteStack(stackIdToDelete);
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
     }
   }

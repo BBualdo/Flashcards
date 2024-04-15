@@ -9,7 +9,25 @@ public class StacksDataAccess(string connectionString)
 {
   private string _connectionString = connectionString;
 
-  public bool UpdateStack(int id, string updatedName)
+  public bool DeleteStack(int? id)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    string sql = $"DELETE FROM stacks WHERE stack_id={id}";
+
+    int affectedRows = connection.Execute(sql);
+
+    if (affectedRows == 0)
+    {
+      AnsiConsole.Markup("[red]Deleting Failed![/]");
+      return false;
+    }
+
+    AnsiConsole.Markup("[green]Stack deleted successfully![/]");
+    return true;
+  }
+
+  public bool UpdateStack(int? id, string? updatedName)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
@@ -41,7 +59,7 @@ public class StacksDataAccess(string connectionString)
     return true;
   }
 
-  public bool InsertStack(string stackName)
+  public bool InsertStack(string? stackName)
   {
     using SqlConnection connection = new(_connectionString);
 
@@ -62,7 +80,6 @@ public class StacksDataAccess(string connectionString)
   public List<Stack> GetStacksList()
   {
     using SqlConnection connection = new(_connectionString);
-    connection.Open();
 
     string sql = "SELECT * FROM stacks";
 
