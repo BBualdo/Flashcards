@@ -21,9 +21,9 @@ public class FlashcardsDataAccess
     string sql = $@"SELECT f.flashcard_id, f.question, f.answer, s.name AS stack_name 
                     FROM flashcards f
                     JOIN stacks s ON f.stack_id=s.stack_id
-                    WHERE f.stack_id={id}";
+                    WHERE f.stack_id=@Id";
 
-    List<FlashcardDTO> flashcards = connection.Query<FlashcardDTO>(sql).ToList();
+    List<FlashcardDTO> flashcards = connection.Query<FlashcardDTO>(sql, new { Id = id }).ToList();
 
     return flashcards;
   }
@@ -46,9 +46,9 @@ public class FlashcardsDataAccess
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"INSERT INTO flashcards(question, answer, stack_id) VALUES('{question}', '{answer}', {stackId})";
+    string sql = $"INSERT INTO flashcards(question, answer, stack_id) VALUES(@Question, @Answer, @StackId)";
 
-    int rowsAffected = connection.Execute(sql);
+    int rowsAffected = connection.Execute(sql, new { Question = question, Answer = answer, StackId = stackId });
 
     if (rowsAffected == 0)
     {
@@ -64,9 +64,9 @@ public class FlashcardsDataAccess
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"UPDATE flashcards SET question='{question}', answer='{answer}', stack_id={newStackId} WHERE flashcard_id={flashcardId}";
+    string sql = $"UPDATE flashcards SET question=@Question, answer=@Answer, stack_id=@NewStackId WHERE flashcard_id=@FlashcardId";
 
-    int affectedRows = connection.Execute(sql);
+    int affectedRows = connection.Execute(sql, new { Question = question, Answer = answer, NewStackId = newStackId, FlashcardId = flashcardId });
 
     if (affectedRows == 0)
     {
@@ -82,9 +82,9 @@ public class FlashcardsDataAccess
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = $"DELETE FROM flashcards WHERE flashcard_id={flashcardId}";
+    string sql = $"DELETE FROM flashcards WHERE flashcard_id=@FlashcardId";
 
-    int rowsAffected = connection.Execute(sql);
+    int rowsAffected = connection.Execute(sql, new { FlashcardId = flashcardId });
 
     if (rowsAffected == 0)
     {
