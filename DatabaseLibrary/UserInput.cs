@@ -6,13 +6,13 @@ namespace DatabaseLibrary;
 
 public class UserInput
 {
-  public static string? GetStackName()
+  public static string? GetStackName(List<Stack> stacks)
   {
     string stackName = AnsiConsole.Ask<string>("[yellow]Enter a name for stack[/] [blue]or type 0 to Stacks Menu: [/]");
 
     if (stackName == "0") return null;
 
-    while (!StackNameValidator.IsValid(stackName))
+    while (!StackNameValidator.IsValid(stackName, stacks))
     {
       stackName = AnsiConsole.Ask<string>("[yellow]Try again: [/]");
     }

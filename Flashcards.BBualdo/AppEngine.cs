@@ -55,74 +55,16 @@ internal class AppEngine
         StacksMenu();
         break;
       case "Show Flashcards":
-        List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacks);
-        int? id = UserInput.GetStackId(stacks);
-        if (id == null) { FlashcardsMenu(); break; }
-
-        List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(id);
-        DbContext.FlashcardsAccess.GetAllFlashcards(flashcards);
-
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        ShowFlashcards();
         break;
       case "Create Flashcard":
-        List<Stack> stacksWhereInsert = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksWhereInsert);
-        int? idOfStackWhereInsert = UserInput.GetStackId(stacksWhereInsert);
-        if (idOfStackWhereInsert == null) { FlashcardsMenu(); break; }
-        string? question = UserInput.GetQuestion();
-        if (question == null) { FlashcardsMenu(); break; }
-        string? answer = UserInput.GetAnswer();
-        if (answer == null) { FlashcardsMenu(); break; }
-
-        DbContext.FlashcardsAccess.InsertFlashcard(idOfStackWhereInsert, question, answer);
-
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        CreateFlashcard();
         break;
       case "Update Flashcard":
-        List<Stack> stacksWhereUpdate = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksWhereUpdate);
-
-        int? idOfStackWhereUpdate = UserInput.GetStackId(stacksWhereUpdate);
-        if (idOfStackWhereUpdate == null) { FlashcardsMenu(); break; }
-
-        List<FlashcardDTO> flashcardsToUpdate = DbContext.FlashcardsAccess.GetFlashcardsList(idOfStackWhereUpdate);
-        DbContext.FlashcardsAccess.GetAllFlashcards(flashcardsToUpdate);
-
-        int? flashcardIdToUpdate = UserInput.GetFlashcardId(flashcardsToUpdate);
-        if (flashcardIdToUpdate == null) { FlashcardsMenu(); break; }
-
-        int? newStackId = UserInput.GetNewStackIdForFlashcard(stacksWhereUpdate);
-        if (newStackId == null) { FlashcardsMenu(); break; }
-        string? updatedQuestion = UserInput.GetQuestion();
-        if (updatedQuestion == null) { FlashcardsMenu(); break; }
-        string? updatedAnswer = UserInput.GetAnswer();
-        if (updatedAnswer == null) { FlashcardsMenu(); break; }
-
-        DbContext.FlashcardsAccess.UpdateFlashcard(flashcardIdToUpdate, newStackId, updatedQuestion, updatedAnswer);
-
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        UpdateFlashcard();
         break;
       case "Delete Flashcard":
-        List<Stack> stacksWhereDelete = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksWhereDelete);
-
-        int? stackIdWhereDelete = UserInput.GetStackId(stacksWhereDelete);
-        if (stackIdWhereDelete == null) { FlashcardsMenu(); break; }
-
-        List<FlashcardDTO> flashcardsToDelete = DbContext.FlashcardsAccess.GetFlashcardsList(stackIdWhereDelete);
-        DbContext.FlashcardsAccess.GetAllFlashcards(flashcardsToDelete);
-
-        int? flashcardIdToDelete = UserInput.GetFlashcardId(flashcardsToDelete);
-        if (flashcardIdToDelete == null) { FlashcardsMenu(); break; }
-
-        DbContext.FlashcardsAccess.DeleteFlashcard(flashcardIdToDelete);
-
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        DeleteFlashcard();
         break;
     }
   }
@@ -141,42 +83,153 @@ internal class AppEngine
         FlashcardsMenu();
         break;
       case "Show Stacks":
-        List<Stack> stacksToShow = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksToShow);
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        ShowStacks();
         break;
       case "Create Stack":
-        string? stackNameToAdd = UserInput.GetStackName();
-        if (stackNameToAdd == null) { StacksMenu(); break; }
-
-        DbContext.StacksAccess.InsertStack(stackNameToAdd);
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        CreateStack();
         break;
       case "Update Stack":
-        List<Stack> stacksToUpdate = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksToUpdate);
-        int? stackIdToUpdate = UserInput.GetStackId(stacksToUpdate);
-        if (stackIdToUpdate == null) { StacksMenu(); break; }
-
-        string? updatedName = UserInput.GetStackName();
-        if (updatedName == null) { StacksMenu(); break; }
-
-        DbContext.StacksAccess.UpdateStack(stackIdToUpdate, updatedName);
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        UpdateStack();
         break;
       case "Delete Stack":
-        List<Stack> stacksToDelete = DbContext.StacksAccess.GetStacksList();
-        DbContext.StacksAccess.GetAllStacks(stacksToDelete);
-        int? stackIdToDelete = UserInput.GetStackId(stacksToDelete);
-        if (stackIdToDelete == null) { StacksMenu(); break; }
-
-        DbContext.StacksAccess.DeleteStack(stackIdToDelete);
-        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
-        Console.ReadKey();
+        DeleteStack();
         break;
     }
+  }
+
+  #region Stacks Methods
+  private void ShowStacks()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+
+    PressAnyKey();
+  }
+
+  private void CreateStack()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    string? stackName = UserInput.GetStackName(stacks);
+    if (stackName == null) { StacksMenu(); return; }
+
+    DbContext.StacksAccess.InsertStack(stackName);
+
+    PressAnyKey();
+  }
+
+  private void UpdateStack()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { StacksMenu(); return; }
+
+    string? name = UserInput.GetStackName(stacks);
+    if (name == null) { StacksMenu(); return; }
+
+    DbContext.StacksAccess.UpdateStack(stackId, name);
+
+    PressAnyKey();
+  }
+
+  private void DeleteStack()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { StacksMenu(); return; }
+
+    DbContext.StacksAccess.DeleteStack(stackId);
+
+    PressAnyKey();
+  }
+  #endregion
+
+  #region FlashcardsMethods
+  private void ShowFlashcards()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { FlashcardsMenu(); return; }
+
+    List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(stackId);
+    DbContext.FlashcardsAccess.GetAllFlashcards(flashcards);
+
+    PressAnyKey();
+  }
+
+  private void CreateFlashcard()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { FlashcardsMenu(); return; }
+
+    string? question = UserInput.GetQuestion();
+    if (question == null) { FlashcardsMenu(); return; }
+
+    string? answer = UserInput.GetAnswer();
+    if (answer == null) { FlashcardsMenu(); return; }
+
+    DbContext.FlashcardsAccess.InsertFlashcard(stackId, question, answer);
+
+    PressAnyKey();
+  }
+
+  private void UpdateFlashcard()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { FlashcardsMenu(); return; }
+
+    List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(stackId);
+    DbContext.FlashcardsAccess.GetAllFlashcards(flashcards);
+
+    int? flashcardId = UserInput.GetFlashcardId(flashcards);
+    if (flashcardId == null) { FlashcardsMenu(); return; }
+
+    int? newStackId = UserInput.GetNewStackIdForFlashcard(stacks);
+    if (newStackId == null) { FlashcardsMenu(); return; }
+
+    string? question = UserInput.GetQuestion();
+    if (question == null) { FlashcardsMenu(); return; }
+
+    string? answer = UserInput.GetAnswer();
+    if (answer == null) { FlashcardsMenu(); return; }
+
+    DbContext.FlashcardsAccess.UpdateFlashcard(flashcardId, newStackId, question, answer);
+
+    PressAnyKey();
+  }
+
+  private void DeleteFlashcard()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    DbContext.StacksAccess.GetAllStacks(stacks);
+
+    int? stackId = UserInput.GetStackId(stacks);
+    if (stackId == null) { FlashcardsMenu(); return; }
+
+    List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(stackId);
+    DbContext.FlashcardsAccess.GetAllFlashcards(flashcards);
+
+    int? flashcardId = UserInput.GetFlashcardId(flashcards);
+    if (flashcardId == null) { FlashcardsMenu(); return; }
+
+    DbContext.FlashcardsAccess.DeleteFlashcard(flashcardId);
+
+    PressAnyKey();
+  }
+  #endregion
+
+  private void PressAnyKey()
+  {
+    AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+    Console.ReadKey();
   }
 }
