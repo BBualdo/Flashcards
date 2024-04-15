@@ -9,40 +9,15 @@ public class StacksDataAccess(string connectionString)
 {
   private string _connectionString = connectionString;
 
-  public bool DeleteStack(int? id)
+  public List<Stack> GetStacksList()
   {
-    using SqlConnection connection = new SqlConnection(_connectionString);
+    using SqlConnection connection = new(_connectionString);
 
-    string sql = $"DELETE FROM stacks WHERE stack_id={id}";
+    string sql = "SELECT * FROM stacks";
 
-    int affectedRows = connection.Execute(sql);
+    List<Stack> stacks = connection.Query<Stack>(sql).ToList();
 
-    if (affectedRows == 0)
-    {
-      AnsiConsole.Markup("[red]Deleting Failed![/]");
-      return false;
-    }
-
-    AnsiConsole.Markup("[green]Stack deleted successfully![/]");
-    return true;
-  }
-
-  public bool UpdateStack(int? id, string? updatedName)
-  {
-    using SqlConnection connection = new SqlConnection(_connectionString);
-
-    string sql = $"UPDATE stacks SET name='{updatedName}' WHERE stack_id={id}";
-
-    int affectedRows = connection.Execute(sql);
-
-    if (affectedRows == 0)
-    {
-      AnsiConsole.Markup("[red]Updating Failed![/]");
-      return false;
-    }
-
-    AnsiConsole.Markup("[green]Stack updated successfully![/]");
-    return true;
+    return stacks;
   }
 
   public bool GetAllStacks(List<Stack> stacks)
@@ -77,14 +52,40 @@ public class StacksDataAccess(string connectionString)
     return true;
   }
 
-  public List<Stack> GetStacksList()
+  public bool UpdateStack(int? id, string? updatedName)
   {
-    using SqlConnection connection = new(_connectionString);
+    using SqlConnection connection = new SqlConnection(_connectionString);
 
-    string sql = "SELECT * FROM stacks";
+    string sql = $"UPDATE stacks SET name='{updatedName}' WHERE stack_id={id}";
 
-    List<Stack> stacks = connection.Query<Stack>(sql).ToList();
+    int affectedRows = connection.Execute(sql);
 
-    return stacks;
+    if (affectedRows == 0)
+    {
+      AnsiConsole.Markup("[red]Updating Failed![/]");
+      return false;
+    }
+
+    AnsiConsole.Markup("[green]Stack updated successfully![/]");
+    return true;
   }
+
+  public bool DeleteStack(int? id)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    string sql = $"DELETE FROM stacks WHERE stack_id={id}";
+
+    int affectedRows = connection.Execute(sql);
+
+    if (affectedRows == 0)
+    {
+      AnsiConsole.Markup("[red]Deleting Failed![/]");
+      return false;
+    }
+
+    AnsiConsole.Markup("[green]Stack deleted successfully![/]");
+    return true;
+  }
+
 }

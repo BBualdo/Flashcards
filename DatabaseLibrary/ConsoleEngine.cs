@@ -43,4 +43,20 @@ public class ConsoleEngine
 
     AnsiConsole.Write(table);
   }
+
+  public static void ShowFlashcardsTable(List<FlashcardDTO> flashcards)
+  {
+    Table table = new Table();
+    table.AddColumn(new TableColumn("ID"));
+    table.AddColumn(new TableColumn("Stack Name"));
+    table.AddColumn(new TableColumn("Question"));
+    table.AddColumn(new TableColumn("Answer"));
+
+    foreach (FlashcardDTO flashcard in flashcards)
+    {
+      table.AddRow(flashcard.Flashcard_Id.ToString(), flashcard.Stack_Name, flashcard.Question, flashcard.Answer);
+    }
+
+    AnsiConsole.Write(table);
+  }
 }

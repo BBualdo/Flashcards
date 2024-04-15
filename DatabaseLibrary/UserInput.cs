@@ -33,4 +33,32 @@ public class UserInput
 
     return stackId;
   }
+
+  public static string? GetQuestion()
+  {
+    string question = AnsiConsole.Ask<string>("[yellow]Enter question for flashcard (front-side): [/]");
+
+    if (question == "0") return null;
+
+    while (!QuestionAndAnswerValidator.IsValid(question))
+    {
+      question = AnsiConsole.Ask<string>("[yellow]Try again: [/]");
+    }
+
+    return question;
+  }
+
+  public static string? GetAnswer()
+  {
+    string answer = AnsiConsole.Ask<string>("[yellow]Enter answer for flashcard (back-side): [/]");
+
+    if (answer == "0") return null;
+
+    while (!QuestionAndAnswerValidator.IsValid(answer))
+    {
+      answer = AnsiConsole.Ask<string>("[yellow]Try again: [/]");
+    }
+
+    return answer;
+  }
 }

@@ -2,16 +2,18 @@
 
 public class FlashcardDTO
 {
-  public int Id { get; set; }
+  public int Flashcard_Id { get; set; }
   public string Question { get; set; }
   public string Answer { get; set; }
-  public string StackName { get; set; }
+  public string Stack_Name { get; set; }
+
+  public FlashcardDTO() { }
 
   public FlashcardDTO(int id, string question, string answer, Stack stack)
   {
-    Id = id;
+    Flashcard_Id = id;
     Question = question;
     Answer = answer;
-    StackName = stack.Name;
+    Stack_Name = stack.Name;
   }
 }

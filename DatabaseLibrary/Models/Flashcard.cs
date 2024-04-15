@@ -2,13 +2,13 @@
 
 public class Flashcard
 {
-  public int Id { get; set; }
+  public int Flashcard_Id { get; set; }
   public string Question { get; set; }
   public string Answer { get; set; }
 
   public Flashcard(int id, string question, string answer)
   {
-    Id = id;
+    Flashcard_Id = id;
     Question = question;
     Answer = answer;
   }

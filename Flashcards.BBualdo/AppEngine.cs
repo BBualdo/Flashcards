@@ -55,16 +55,31 @@ internal class AppEngine
         StacksMenu();
         break;
       case "Show Flashcards":
-        // GetAllStacks();
-        // UserInput.GetStackID();
-        // GetAllFlashcards();
+        List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+        DbContext.StacksAccess.GetAllStacks(stacks);
+        int? id = UserInput.GetStackID(stacks);
+        if (id == null) { FlashcardsMenu(); break; }
+
+        List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(id);
+        DbContext.FlashcardsAccess.GetAllFlashcards(flashcards);
+
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
       case "Create Flashcard":
-        // GetAllStacks();
-        // UserInput.GetStackID();
-        // UserInput.GetQuestion();
-        // UserInput.GetAnswer();
-        // InsertFlashcard();
+        List<Stack> stacksWhereInsert = DbContext.StacksAccess.GetStacksList();
+        DbContext.StacksAccess.GetAllStacks(stacksWhereInsert);
+        int? idOfStackToInsert = UserInput.GetStackID(stacksWhereInsert);
+        if (idOfStackToInsert == null) { FlashcardsMenu(); break; }
+        string? question = UserInput.GetQuestion();
+        if (question == null) { FlashcardsMenu(); break; }
+        string? answer = UserInput.GetAnswer();
+        if (answer == null) { FlashcardsMenu(); break; }
+
+        DbContext.FlashcardsAccess.InsertFlashcard(idOfStackToInsert, question, answer);
+
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
       case "Update Flashcard":
         // GetAllStacks();
@@ -106,11 +121,7 @@ internal class AppEngine
         break;
       case "Create Stack":
         string? stackNameToAdd = UserInput.GetStackName();
-        if (stackNameToAdd == null)
-        {
-          StacksMenu();
-          break;
-        }
+        if (stackNameToAdd == null) { StacksMenu(); break; }
 
         DbContext.StacksAccess.InsertStack(stackNameToAdd);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
@@ -120,18 +131,10 @@ internal class AppEngine
         List<Stack> stacksToUpdate = DbContext.StacksAccess.GetStacksList();
         DbContext.StacksAccess.GetAllStacks(stacksToUpdate);
         int? stackIdToUpdate = UserInput.GetStackID(stacksToUpdate);
-        if (stackIdToUpdate == null)
-        {
-          StacksMenu();
-          break;
-        }
+        if (stackIdToUpdate == null) { StacksMenu(); break; }
 
         string? updatedName = UserInput.GetStackName();
-        if (updatedName == null)
-        {
-          StacksMenu();
-          break;
-        }
+        if (updatedName == null) { StacksMenu(); break; }
 
         DbContext.StacksAccess.UpdateStack(stackIdToUpdate, updatedName);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
@@ -141,11 +144,7 @@ internal class AppEngine
         List<Stack> stacksToDelete = DbContext.StacksAccess.GetStacksList();
         DbContext.StacksAccess.GetAllStacks(stacksToDelete);
         int? stackIdToDelete = UserInput.GetStackID(stacksToDelete);
-        if (stackIdToDelete == null)
-        {
-          StacksMenu();
-          break;
-        }
+        if (stackIdToDelete == null) { StacksMenu(); break; }
 
         DbContext.StacksAccess.DeleteStack(stackIdToDelete);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");

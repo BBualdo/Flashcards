@@ -8,6 +8,7 @@ public class DbContext
 {
   private string _connectionString { get; set; }
   public StacksDataAccess StacksAccess { get; set; }
+  public FlashcardsDataAccess FlashcardsAccess { get; set; }
 
   public DbContext()
   {
@@ -18,6 +19,7 @@ public class DbContext
     CreateTables();
 
     StacksAccess = new(_connectionString);
+    FlashcardsAccess = new(_connectionString);
   }
 
   private void CreateDatabase()
