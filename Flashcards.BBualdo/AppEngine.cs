@@ -1,4 +1,5 @@
 ﻿using DatabaseLibrary;
+using DatabaseLibrary.Models;
 using Spectre.Console;
 
 namespace Flashcards.BBualdo;
@@ -98,21 +99,25 @@ internal class AppEngine
         FlashcardsMenu();
         break;
       case "Show Stacks":
-        DbContext.StacksAccess.GetAllStacks();
+        List<Stack> stacksToShow = DbContext.StacksAccess.GetStacksList();
+        DbContext.StacksAccess.GetAllStacks(stacksToShow);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
         Console.ReadKey();
         break;
       case "Create Stack":
-        string stackName = UserInput.GetStackName();
-        DbContext.StacksAccess.InsertStack(stackName);
+        string stackNameToAdd = UserInput.GetStackName();
+        DbContext.StacksAccess.InsertStack(stackNameToAdd);
         AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
         Console.ReadKey();
         break;
       case "Update Stack":
-        // GetAllStacks();
-        // UserInput.GetStackID();
-        // UserInput.GetStackName();
-        // UpdateStack();
+        List<Stack> stacksToUpdate = DbContext.StacksAccess.GetStacksList();
+        DbContext.StacksAccess.GetAllStacks(stacksToUpdate);
+        int stackIdToUpdate = UserInput.GetStackID(stacksToUpdate);
+        string updatedName = UserInput.GetStackName();
+        DbContext.StacksAccess.UpdateStack(stackIdToUpdate, updatedName);
+        AnsiConsole.Markup("\n\n[blue]Press any key to return to Main Menu.[/]");
+        Console.ReadKey();
         break;
       case "Delete Stack":
         // GetAllStacks();

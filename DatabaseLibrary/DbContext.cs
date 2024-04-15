@@ -32,7 +32,7 @@ public class DbContext
     _connectionString = ConfigurationManager.AppSettings.Get("ConnectionString")!;
   }
 
-  private void CreateTables()
+  public void CreateTables()
   {
     using SqlConnection connection = new(_connectionString);
     connection.Open();

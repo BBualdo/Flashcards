@@ -9,10 +9,26 @@ public class StacksDataAccess(string connectionString)
 {
   private string _connectionString = connectionString;
 
-  public bool GetAllStacks()
+  public bool UpdateStack(int id, string updatedName)
   {
-    List<Stack> stacks = GetStacksList();
+    using SqlConnection connection = new SqlConnection(_connectionString);
 
+    string sql = $"UPDATE stacks SET name='{updatedName}' WHERE stack_id={id}";
+
+    int affectedRows = connection.Execute(sql);
+
+    if (affectedRows == 0)
+    {
+      AnsiConsole.Markup("[red]Updating Failed![/]");
+      return false;
+    }
+
+    AnsiConsole.Markup("[green]Stack updated successfully![/]");
+    return true;
+  }
+
+  public bool GetAllStacks(List<Stack> stacks)
+  {
     if (stacks.Count == 0)
     {
       AnsiConsole.Markup("[red]Stacks list is empty.[/] Create one first.");
@@ -43,7 +59,7 @@ public class StacksDataAccess(string connectionString)
     return true;
   }
 
-  private List<Stack> GetStacksList()
+  public List<Stack> GetStacksList()
   {
     using SqlConnection connection = new(_connectionString);
     connection.Open();
