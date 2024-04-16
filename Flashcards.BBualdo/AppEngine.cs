@@ -33,7 +33,7 @@ internal class AppEngine
         FlashcardsMenu();
         break;
       case "Study Sessions":
-        // StudySessionsMenu()
+        StudySessionsMenu();
         break;
     }
   }
@@ -93,6 +93,28 @@ internal class AppEngine
         break;
       case "Delete Stack":
         DeleteStack();
+        break;
+    }
+  }
+
+  public void StudySessionsMenu()
+  {
+    AnsiConsole.Clear();
+    ConsoleEngine.ShowAppTitle();
+    ConsoleEngine.ShowMenuTitle("Study Sessions Menu");
+
+    string userChoice = ConsoleEngine.MenuSelector("", ["Back", "Study", "Show Study Sessions"]);
+
+    switch (userChoice)
+    {
+      case "Back":
+        MainMenu();
+        break;
+      case "Study":
+        // StartStudySession();
+        break;
+      case "Show Study Sessions":
+        // GetStudySessions();
         break;
     }
   }
