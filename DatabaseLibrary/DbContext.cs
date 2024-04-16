@@ -50,7 +50,13 @@ public class DbContext
                   display_id INT NOT NULL,
                   question VARCHAR(200) NOT NULL,
                   answer VARCHAR(200) NOT NULL,
-                  stack_id INT REFERENCES stacks(stack_id));";
+                  stack_id INT REFERENCES stacks(stack_id) ON DELETE CASCADE);
+
+                  IF NOT EXISTS(SELECT * FROM sys.tables WHERE schema_id=SCHEMA_ID('dbo') AND name='sessions') CREATE TABLE sessions(
+                  session_id INT IDENTITY(1, 1) PRIMARY KEY,
+                  date DATE NOT NULL,
+                  score INT NOT NULL,
+                  stack_id INT REFERENCES stacks(stack_id) ON DELETE CASCADE)";
 
     connection.Execute(sql);
   }
