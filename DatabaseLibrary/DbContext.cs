@@ -11,6 +11,7 @@ public class DbContext
   private string _connectionString { get; set; }
   public StacksDataAccess StacksAccess { get; set; }
   public FlashcardsDataAccess FlashcardsAccess { get; set; }
+  public SessionsDataAccess SessionAccess { get; set; }
 
   public DbContext()
   {
@@ -24,6 +25,7 @@ public class DbContext
 
     StacksAccess = new(_connectionString);
     FlashcardsAccess = new(_connectionString);
+    SessionAccess = new(_connectionString);
   }
 
   private void CreateDatabase()

@@ -114,7 +114,7 @@ internal class AppEngine
         // StartStudySession();
         break;
       case "Show Study Sessions":
-        // GetStudySessions();
+        GetStudySessions();
         break;
     }
   }
@@ -171,7 +171,7 @@ internal class AppEngine
   }
   #endregion
 
-  #region FlashcardsMethods
+  #region Flashcards Methods
   private void ShowFlashcards()
   {
     List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
@@ -272,6 +272,15 @@ internal class AppEngine
   }
   #endregion
 
+  #region Study Sessions Methods
+  private void GetStudySessions()
+  {
+    List<StudySession> sessions = DbContext.SessionAccess.GetStudySessionsList();
+    DbContext.SessionAccess.GetAllStudySessions(sessions);
+
+    PressAnyKey();
+  }
+  #endregion
 
   private void PressAnyKey()
   {

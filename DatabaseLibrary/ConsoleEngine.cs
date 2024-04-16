@@ -59,4 +59,20 @@ public class ConsoleEngine
 
     AnsiConsole.Write(table);
   }
+
+  public static void ShowStudySessionsTable(List<StudySessionDTO> sessions)
+  {
+    Table table = new Table();
+    table.AddColumn(new TableColumn("ID"));
+    table.AddColumn(new TableColumn("Stack Name"));
+    table.AddColumn(new TableColumn("Date"));
+    table.AddColumn(new TableColumn("Score"));
+
+    foreach (StudySessionDTO session in sessions)
+    {
+      table.AddRow(session.Id.ToString(), session.StackName, session.Date.ToString("dd-MM-yyyy"), session.Score.ToString() + "%");
+    }
+
+    AnsiConsole.Write(table);
+  }
 }
