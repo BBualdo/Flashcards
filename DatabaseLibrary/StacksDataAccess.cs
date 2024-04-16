@@ -87,5 +87,4 @@ public class StacksDataAccess(string connectionString)
     AnsiConsole.Markup("[green]Stack deleted successfully![/]");
     return true;
   }
-
 }
