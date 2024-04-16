@@ -48,7 +48,25 @@ public class SessionsDataAccess
     return true;
   }
 
-  private string GetStackNameForStudySession(int stackId)
+  public bool InsertSession(StudySession session)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    string sql = "INSERT INTO sessions(date, score, stack_id) VALUES(@Date, @Score, @StackId)";
+
+    int rowsAffected = connection.Execute(sql, new { Date = session.Date, Score = session.Score, StackId = session.Stack_Id });
+
+    if (rowsAffected == 0)
+    {
+      AnsiConsole.Markup("[red]Inserting Failed![/]");
+      return false;
+    }
+
+    AnsiConsole.Markup("[green]Session saved in sessions list![/]");
+    return true;
+  }
+
+  private string GetStackNameForStudySession(int? stackId)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);
 

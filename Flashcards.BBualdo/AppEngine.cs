@@ -111,7 +111,7 @@ internal class AppEngine
         MainMenu();
         break;
       case "Study":
-        // StartStudySession();
+        StartStudySession();
         break;
       case "Show Study Sessions":
         GetStudySessions();
@@ -279,6 +279,57 @@ internal class AppEngine
     DbContext.SessionAccess.GetAllStudySessions(sessions);
 
     PressAnyKey();
+  }
+
+  private void StartStudySession()
+  {
+    List<Stack> stacks = DbContext.StacksAccess.GetStacksList();
+    if (DbContext.StacksAccess.GetAllStacks(stacks))
+    {
+      int? stackId = UserInput.GetStackId(stacks);
+      if (stackId == null) return;
+      StartStudying(stackId);
+    }
+
+    PressAnyKey();
+  }
+
+  private void StartStudying(int? stackId)
+  {
+    StudySession session = new StudySession(DateTime.Now, stackId);
+
+    List<FlashcardDTO> flashcards = DbContext.FlashcardsAccess.GetFlashcardsList(stackId);
+    List<FlashcardDTO> flashcardsPool = [.. flashcards];
+    Random random = new Random();
+
+    for (int i = 0; i < flashcards.Count; i++)
+    {
+      AnsiConsole.Clear();
+
+      int flashcardNumber = random.Next(0, flashcardsPool.Count);
+      string question = flashcardsPool[flashcardNumber].Question;
+      string userAnswer = AnsiConsole.Ask<string>($"Translate to English '[yellow]{question}[/]': ");
+
+      if (userAnswer.ToLower() == flashcardsPool[flashcardNumber].Answer.ToLower())
+      {
+        session.Score++;
+        AnsiConsole.Markup("[green]Correct answer![/] [blue]Press any key to continue.[/] ");
+        Console.ReadKey();
+      }
+      else
+      {
+        AnsiConsole.Markup($"[red]Incorrect answer![/] Correct answer is: [green]{flashcardsPool[flashcardNumber].Answer}[/]. [blue]Press any key to continue.[/] ");
+        Console.ReadKey();
+      }
+
+      flashcardsPool.Remove(flashcardsPool[flashcardNumber]);
+    }
+
+    session.Score = Convert.ToInt32((double)session.Score / flashcards.Count * 100);
+
+    AnsiConsole.Markup($"That's it! You answered correctly for [green]{session.Score}%[/] of Flashcard's questions. ");
+
+    DbContext.SessionAccess.InsertSession(session);
   }
   #endregion
 
